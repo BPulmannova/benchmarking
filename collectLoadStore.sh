@@ -1,11 +1,25 @@
 #!/bin/bash
 
-PERF_COMMAND='sudo /home/barbara/arm_spe/linux/tools/perf/perf'
-
-JITTER=1
 PERIOD=2048
-BINARY=5-ld-5-st-1-mil
-OUTFILE=results/${BINARY}.log
+JITTER=1
+BINARY=bin/5-ld-5-st-1-mil
+ITER=100
+
+while getopts "p:j:b:i:h" flag
+do
+    case "${flag}" in
+        p) PERIOD=${OPTARG};;
+        j) JITTER=${OPTARG};;
+        b) BINARY=${OPTARG};;
+        i) ITER=${OPTARG};;
+        h) echo "Usage: -p PERIOD -j JITTER -b BINARY -i ITER"
+           echo "default: PERIOD=2048 JITTER=1 BINARY=bin/5-ld-5-st-1-mil ITER=100"
+           exit;;
+    esac
+done
+
+PERF_COMMAND='sudo /home/barbara/arm_spe/linux/tools/perf/perf'
+OUTFILE=results/${BINARY}.${PERIOD}.log
 RAW_LOADS=logs/loads.raw.log
 RAW_STORES=logs/stores.raw.log
 LOAD_DISTRIBUTION=logs/loadDistribution.log
@@ -14,14 +28,14 @@ STORE_DISTRIBUTION=logs/storeDistribution.log
 make clean
 make
 
-echo "# jitter: ${JITTER}, period: ${PERIOD}, refLoads: 5mil" > ${OUTFILE}
+echo "# jitter: ${JITTER}, period: ${PERIOD}, refLoads: 5mil, iter: ${ITER}, binary: ${BINARY}" > ${OUTFILE}
 
-for i in {1..1000}
+for (( i=0; i<=${ITER}; i++ ))
     do
 
     # get raw data
-    ${PERF_COMMAND} record -e arm_spe_0/load_filter=1,store_filter=0,jitter=${JITTER},period=${PERIOD},ts_enable=1/ -o data/loads.perf.data -- bin/${BINARY}
-    ${PERF_COMMAND} record -e arm_spe_0/load_filter=0,store_filter=1,jitter=${JITTER},period=${PERIOD},ts_enable=1/ -o data/stores.perf.data -- bin/${BINARY}
+    ${PERF_COMMAND} record -e arm_spe_0/load_filter=1,store_filter=0,jitter=${JITTER},period=${PERIOD},ts_enable=1/ -o data/loads.perf.data -- ${BINARY}
+    ${PERF_COMMAND} record -e arm_spe_0/load_filter=0,store_filter=1,jitter=${JITTER},period=${PERIOD},ts_enable=1/ -o data/stores.perf.data -- ${BINARY}
     ${PERF_COMMAND} report -D -i data/loads.perf.data > ${RAW_LOADS}
     ${PERF_COMMAND} report -D -i data/stores.perf.data > ${RAW_STORES}
 
