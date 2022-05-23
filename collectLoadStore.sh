@@ -19,7 +19,7 @@ do
 done
 
 PERF_COMMAND='sudo /home/barbara/arm_spe/linux/tools/perf/perf'
-OUTFILE=results/${BINARY}.${PERIOD}.log
+OUTFILE=results/$(basename ${BINARY}).${PERIOD}.log
 RAW_LOADS=logs/loads.raw.log
 RAW_STORES=logs/stores.raw.log
 LOAD_DISTRIBUTION=logs/loadDistribution.log
