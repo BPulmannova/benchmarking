@@ -1,0 +1,36 @@
+.globl nested_loop
+nested_loop:
+        sub     sp, sp, #32
+        str     w0, [sp, 12]
+        str     wzr, [sp, 28]
+        str     wzr, [sp, 24]
+        b       .L2
+.L5:
+        str     wzr, [sp, 20]
+        b       .L3
+.L4:
+        ldr     w1, [sp, 24]
+        ldr     w0, [sp, 20]
+        mul     w0, w1, w0
+        ldr     w1, [sp, 28]
+        add     w0, w1, w0
+        str     w0, [sp, 28]
+        ldr     w0, [sp, 20]
+        add     w0, w0, 1
+        str     w0, [sp, 20]
+.L3:
+        ldr     w1, [sp, 20]
+        ldr     w0, [sp, 12]
+        cmp     w1, w0
+        blt     .L4
+        ldr     w0, [sp, 24]
+        add     w0, w0, 1
+        str     w0, [sp, 24]
+.L2:
+        ldr     w1, [sp, 24]
+        ldr     w0, [sp, 12]
+        cmp     w1, w0
+        blt     .L5
+        ldr     w0, [sp, 28]
+        add     sp, sp, 32
+        ret

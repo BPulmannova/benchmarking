@@ -19,7 +19,7 @@ do
 done
 
 PERF_COMMAND='sudo /home/barbara/arm_spe/linux/tools/perf/perf'
-OUTFILE=results/$(basename ${BINARY}).${PERIOD}.log
+OUTFILE=results/$(basename ${BINARY}).${PERIOD}.csv
 RAW_LOADS=logs/loads.raw.log
 RAW_STORES=logs/stores.raw.log
 LOAD_DISTRIBUTION=logs/loadDistribution.log
@@ -29,6 +29,7 @@ make clean
 make
 
 echo "# jitter: ${JITTER}, period: ${PERIOD}, refLoads: 5mil, iter: ${ITER}, binary: ${BINARY}" > ${OUTFILE}
+echo "total_loads,load5,load4,load3,load2,load1,total_stores,store5,store4,store3,store2,store1," >> ${OUTFILE}
 
 for (( i=0; i<=${ITER}; i++ ))
     do
@@ -56,5 +57,6 @@ for (( i=0; i<=${ITER}; i++ ))
     #grep -o -E 'VA 0x.*$' ${RAW_STORES} | grep -o -E '0x.*$'| sort | uniq -c | sort -bgr | head -5
 
     echo "${LOADS},${LOADS_SORTED}${STORES},${STORES_SORTED}" >> ${OUTFILE}
+    cp ${OUTFILE} ../plotting/data/
 
     done

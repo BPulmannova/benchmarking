@@ -1,0 +1,153 @@
+.globl nested_loop
+nested_loop:
+        nop
+        nop
+        sub     sp, sp, #32
+        nop
+
+        nop
+        nop
+        str     w0, [sp, 12]
+        nop
+
+        nop
+        nop
+        str     wzr, [sp, 28]
+        nop
+
+        nop
+        nop
+        str     wzr, [sp, 24]
+        nop
+
+        nop
+        nop
+        b       .L2
+        nop
+.L5:
+        nop
+        nop
+        str     wzr, [sp, 20]
+        nop
+
+        nop
+        nop
+        b       .L3
+        nop
+.L4:
+        nop
+        nop
+        ldr     w1, [sp, 24]
+        nop
+
+        nop
+        nop
+        ldr     w0, [sp, 20]
+        nop
+
+        nop
+        nop
+        mul     w0, w1, w0
+        nop
+
+        nop
+        nop
+        ldr     w1, [sp, 28]
+        nop
+
+        nop
+        nop
+        add     w0, w1, w0
+        nop
+
+        nop
+        nop
+        str     w0, [sp, 28]
+        nop
+
+
+        nop
+        nop
+        ldr     w0, [sp, 20]
+        nop
+
+        nop
+        nop
+        add     w0, w0, 1
+        nop
+
+        nop
+        nop
+        str     w0, [sp, 20]
+        nop
+.L3:
+
+        nop
+        nop
+        ldr     w1, [sp, 20]
+        nop
+
+        nop
+        nop
+        ldr     w0, [sp, 12]
+        nop
+
+        nop
+        nop
+        cmp     w1, w0
+        nop
+
+        nop
+        nop
+        blt     .L4
+        nop
+
+        nop
+        nop
+        ldr     w0, [sp, 24]
+        nop
+
+        nop
+        nop
+        add     w0, w0, 1
+        nop
+
+        nop
+        nop
+        str     w0, [sp, 24]
+        nop
+.L2:
+        nop
+        nop
+        ldr     w1, [sp, 24]
+        nop
+
+        nop
+        nop
+        ldr     w0, [sp, 12]
+        nop
+
+        nop
+        nop
+        cmp     w1, w0
+        nop
+
+        nop
+        nop
+        blt     .L5
+        nop
+
+        nop
+        nop
+        ldr     w0, [sp, 28]
+        nop
+
+        nop
+        nop
+        add     sp, sp, 32
+        nop
+
+        nop
+        nop
+        ret
+        nop
