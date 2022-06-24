@@ -6,12 +6,14 @@ fibonacci:
         mov     w0, 1
         str     w0, [sp, 24]
         str     wzr, [sp, 20]
-        b       .L2
 .L3:
+        ldr     w1, [sp, 20]
+        ldr     w0, [sp, 12]
+        cmp     w1, w0
+        bge     .L2
         ldr     w0, [sp, 28]
         str     w0, [sp, 16]
-        ldr     w1, [sp, 28]
-        ldr     w0, [sp, 24]
+        ldr     w1, [sp, 24]
 
         add     w0, w1, w0
         str     w0, [sp, 28]
@@ -21,11 +23,8 @@ fibonacci:
         ldr     w0, [sp, 20]
         add     w0, w0, 1
         str     w0, [sp, 20]
+        b       .L3
 .L2:
-        ldr     w1, [sp, 20]
-        ldr     w0, [sp, 12]
-        cmp     w1, w0
-        blt     .L3
         ldr     w0, [sp, 28]
         add     sp, sp, 32
         ret

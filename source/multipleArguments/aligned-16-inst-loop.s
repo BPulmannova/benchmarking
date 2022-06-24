@@ -1,5 +1,6 @@
 .globl fibonacci
 fibonacci:
+        nop
         sub     sp, sp, #32
         str     w0, [sp, 12]
         str     wzr, [sp, 28]

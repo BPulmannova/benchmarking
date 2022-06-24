@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PERIOD=2048
+PERIOD=150001
 ITER=100
 JITTER=1
 HEAD=5
@@ -30,6 +30,9 @@ PERF_COMMAND='sudo /home/barbara/arm_spe/linux/tools/perf/perf'
 PERF_FILE=data/${BASE}.${PERIOD}.j${JITTER}.latency.perf.data
 LOG_FILE=logs/${BASE}.${PERIOD}.j${JITTER}.latency.perf.log
 RESULT_FILE=results/${BASE}.${PERIOD}.j${JITTER}.s${STORE_FILTER}.l${LOAD_FILTER}.f${BRANCH_FILTER}.latency.csv
+TEMP_FILE=temp/${BASE}.${PERIOD}.j${JITTER}.latency.temp.log
+STORE_NUMBER=temp/${BASE}.${PERIOD}.j${JITTER}.latency.stores.log
+RAW_FILE=temp/${BASE}.${PERIOD}.j${JITTER}.raw.temp.log
 
 # dump disassembly of the executable
 objdump -D ${BINARY} > logs/${BASE}.ds
@@ -38,6 +41,9 @@ echo "# period=${PERIOD}, jitter=${JITTER}, iter=${ITER}, head=${HEAD}" > ${RESU
 echo "# store_filter=${STORE_FILTER}, load_filter=${LOAD_FILTER}, branch_filter=${BRANCH_FILTER}" >> ${RESULT_FILE}
 echo "VA,AVG_LAT,SAMPLES" >> ${RESULT_FILE}
 
+echo "VA,LAT" > ${TEMP_FILE}
+echo "STORES" > ${STORE_NUMBER}
+echo "#raw file" > ${TEMP_FILE}
 
 for (( i=0; i<${ITER}; i++ ))
     do
@@ -46,10 +52,5 @@ for (( i=0; i<${ITER}; i++ ))
     # get raw data
     ${PERF_COMMAND} report -D -i ${PERF_FILE} > ${LOG_FILE}
     # count samples by PC and report associated average total latency
-    grep -E 'PC 0x.* ' -A 5  ${LOG_FILE} | grep -o -E '0x.*$|LAT [0-9]* TOT' | sed ':begin;$!N;s/ el[0-3] ns=[0-1]\nLAT /,/' \
-    | tr -d ' TOT' | awk -F ',' -v OFS=',' '{seen[$1]+=$2; count[$1]++} END{for (x in seen)print x, seen[x]/count[x], count[x]}'\
-    | sort -t ',' | head -${HEAD} >> ${RESULT_FILE}
+    grep -E 'PC 0x[0-9a-f]+' -A 5  ${LOG_FILE} | grep -o -E 'PC 0x[0-9a-f]+|LD GP-REG|ST GP-REG|B COND|B IND|OTHER INSN-OTHER|LAT [0-9]* ISSUE|LAT [0-9]* TOT' >> ${RAW_FILE}
     done
-
-
-#awk -F ',' '{print $1}' logs/${BASE}.${PERIOD}.latency.temp.log | sort | uniq -c | sort -nr > logs/${BASE}.${PERIOD}.latency.unique.log

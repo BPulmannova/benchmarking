@@ -19,6 +19,14 @@ f:
         udiv    w10, w10, w15
         madd    w0, w10, w9, w0
 
+        udiv    w9, w9, w14
+        udiv    w10, w10, w15
+        madd    w0, w10, w9, w0
+
+        udiv    w9, w9, w14
+        udiv    w10, w10, w15
+        madd    w0, w10, w9, w0
+
         subs    w1, w1, 1
         bne     .L2
 
